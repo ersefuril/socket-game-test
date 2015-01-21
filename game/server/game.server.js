@@ -74,7 +74,7 @@ game_server._onMessage = function(client,message) {
     // Handle ping message
     } else if(message_type == 'p') {
         client.send('s.p.' + message_parts[1]);
-    // Hande color message
+    // Handle color message
     } else if(message_type == 'c') {    //Client changed their color!
         if(other_client)
             other_client.send('s.c.' + message_parts[1]);
@@ -108,7 +108,7 @@ game_server.createGame = function(player) {
     var thegame = {
         id : UUID(),                //generate a new id for the game
         player_host:player,         //so we know who initiated the game
-        player_client:null,         //nobody else joined yet, since its new
+        player_clients:[],         //nobody else joined yet, since its new
         player_count:1              //for simple checking of state
     };
 
@@ -223,22 +223,20 @@ game_server.findGame = function(player) {
             //get the game we are checking against
             var game_instance = this.games[gameid];
 
-            //If the game is a player short
-            if(game_instance.player_count < 2) {
+            //someone wants us to join!
+            joined_a_game = true;
+            //increase the player count and store
+            //the player as the client of this game
+            game_instance.player_clients.push(player);
+            var player_instance = {};
+            player_instance.instance = player;
+            game_instance.gamecore.players.others.push(player_instance);
+            game_instance.player_count++;
 
-                //someone wants us to join!
-                joined_a_game = true;
-                //increase the player count and store
-                //the player as the client of this game
-                game_instance.player_client = player;
-                game_instance.gamecore.players.other.instance = player;
-                game_instance.player_count++;
+            //start running the game on the server,
+            //which will tell them to respawn/start
+            this.startGame(game_instance);
 
-                //start running the game on the server,
-                //which will tell them to respawn/start
-                this.startGame(game_instance);
-
-            } //if less than 2 players
         } //for all games
 
         //now if we didn't join a game,
