@@ -149,32 +149,35 @@ game_server.endGame = function(gameid, userid) {
         //stop the game updates immediate
         thegame.gamecore.stop_update();
 
+        // FIXME RCH : manage number of player
+
+
         //if the game has two players, the one is leaving
-        if(thegame.player_count > 1) {
-
-            //send the players the message the game is ending
-            if(userid == thegame.player_host.userid) {
-
-                //the host left, oh snap. Lets try join another game
-                if(thegame.player_client) {
-                    //tell them the game is over
-                    thegame.player_client.send('s.e');
-                    //now look for/create a new game.
-                    this.findGame(thegame.player_client);
-                }
-
-            } else {
-                //the other player left, we were hosting
-                if(thegame.player_host) {
-                    //tell the client the game is ended
-                    thegame.player_host.send('s.e');
-                    //i am no longer hosting, this game is going down
-                    thegame.player_host.hosting = false;
-                    //now look for/create a new game.
-                    this.findGame(thegame.player_host);
-                }
-            }
-        }
+        //if(thegame.player_count > 1) {
+        //
+        //    //send the players the message the game is ending
+        //    if(userid == thegame.player_host.userid) {
+        //
+        //        //the host left, oh snap. Lets try join another game
+        //        if(thegame.player_client) {
+        //            //tell them the game is over
+        //            thegame.player_client.send('s.e');
+        //            //now look for/create a new game.
+        //            this.findGame(thegame.player_client);
+        //        }
+        //
+        //    } else {
+        //        //the other player left, we were hosting
+        //        if(thegame.player_host) {
+        //            //tell the client the game is ended
+        //            thegame.player_host.send('s.e');
+        //            //i am no longer hosting, this game is going down
+        //            thegame.player_host.hosting = false;
+        //            //now look for/create a new game.
+        //            this.findGame(thegame.player_host);
+        //        }
+        //    }
+        //}
 
         delete this.games[gameid];
         this.game_count--;
@@ -189,16 +192,19 @@ game_server.endGame = function(gameid, userid) {
 
 game_server.startGame = function(game) {
 
-    //right so a game has 2 players and wants to begin
+    //right so a game has n players and wants to begin
     //the host already knows they are hosting,
     //tell the other client they are joining a game
     //s=server message, j=you are joining, send them the host id
-    game.player_client.send('s.j.' + game.player_host.userid);
-    game.player_client.game = game;
+    var i;
+    for(i = 0; i < game.player_clients.length; i++) {
+        game.player_clients[i].send('s.j.' + game.player_host.userid);
+        game.player_clients[i].game = game;
 
-    //now we tell both that the game is ready to start
-    //clients will reset their positions in this case.
-    game.player_client.send('s.r.'+ String(game.gamecore.local_time).replace('.','-'));
+        //now we tell both that the game is ready to start
+        //clients will reset their positions in this case.
+        game.player_clients[i].send('s.r.'+ String(game.gamecore.local_time).replace('.','-'));
+    }
     game.player_host.send('s.r.'+ String(game.gamecore.local_time).replace('.','-'));
 
     //set this flag, so that the update loop can run it.

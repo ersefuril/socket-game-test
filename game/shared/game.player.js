@@ -14,7 +14,14 @@
  * @param game_instance
  * @param player_instance
  */
-var game_player = function(game_instance, player_instance) {
+
+/*
+ The player class
+ A simple class to maintain state of a player on screen,
+ as well as to draw that state when required.
+ */
+
+var game_player = function( game_instance, player_instance ) {
 
     //Store the instance, if any
     this.instance = player_instance;
@@ -47,18 +54,17 @@ var game_player = function(game_instance, player_instance) {
     //The 'host' of a game gets created with a player instance since
     //the server already knows who they are. If the server starts a game
     //with only a host, the other player is set up in the 'else' below
-    if(player_instance) {
-        this.pos = { x:20, y:20 };
-    } else {
-        this.pos = { x:500, y:200 };
-    }
+    //if(player_instance) {
+    //    this.pos = { x:20, y:20 };
+    //} else {
+    //    this.pos = { x:500, y:200 };
+    //}
 
-};
+}; //game_player.constructor
 
-/**
- * Draw player
- */
 game_player.prototype.draw = function(){
+
+    console.log("draw player ", this.id);
 
     //Set the color for this player
     game.ctx.fillStyle = this.color;
@@ -70,7 +76,7 @@ game_player.prototype.draw = function(){
     game.ctx.fillStyle = this.info_color;
     game.ctx.fillText(this.state, this.pos.x+10, this.pos.y + 4);
 
-}; //game
+}; //game_player.draw
 
 
 if( 'undefined' != typeof global ) {
