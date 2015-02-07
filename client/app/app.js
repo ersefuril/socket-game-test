@@ -3,10 +3,8 @@ var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 
 /* TODO : Listen window resize */
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-console.log(canvas.style);
+canvas.width = 800;
+canvas.height = 600;
 
 var game = new Game(socket), currentPlayer = new CurrentPlayer(socket);
 
@@ -20,10 +18,9 @@ window.onkeydown = function(event) {
 
 setInterval(function() {
     
-    //clear background
-    context.fillStyle = '#FFFFFF';
-    context.fillRect(0,0,window.innerWidth,window.innerHeight);
-    
+    // clear everything in the map
+    context.clearRect(0,0,window.innerWidth,window.innerHeight);
+
     //draw game
     game.draw(context);
     
