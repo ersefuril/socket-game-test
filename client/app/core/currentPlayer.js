@@ -12,51 +12,59 @@ function CurrentPlayer(socket) {
     this.commands = {directions: []};
 }
 
-/* TODO : Is having several directions is useful when we have only one keyCode ?! */
-/* FIXME RCH : do a more smoothly navigation */
+CurrentPlayer.prototype.addDirection = function(direction) {
+    this.commands.directions.push(direction);
+    this.commandsChanged = true;
+};
+
+CurrentPlayer.prototype.removeDirection = function(direction) {
+    this.commands.directions.splice(this.commands.directions.indexOf(direction), 1);
+    this.commandsChanged = true;
+};
+
 CurrentPlayer.prototype.onKeyDown  = function(keyCode) {
-    if(this.commands.directions.length < 2) {
-        switch(keyCode) {
-            case 38:
-                this.commands.directions.push(Direction.UP);
-                break;
-            case 40:
-                this.commands.directions.push(Direction.DOWN);
-                break;
-            case 39:
-                this.commands.directions.push(Direction.RIGHT);
-                break;
-            case 37:
-                this.commands.directions.push(Direction.LEFT);
-                break;
-        }
+
+    switch(keyCode) {
+        case 38:
+            this.addDirection(Direction.UP);
+            break;
+        case 40:
+            this.addDirection(Direction.DOWN);
+            break;
+        case 39:
+            this.addDirection(Direction.RIGHT);
+            break;
+        case 37:
+            this.addDirection(Direction.LEFT);
+            break;
     }
 };
 
 CurrentPlayer.prototype.onKeyUp  = function(keyCode) {
-    console.log("on key up");
-    this.commands = {directions: []};
 
-//    switch(keyCode) {
-//        case 38:
-//            this.commands.directions.splice(this.commands.directions.indexOf(Direction.UP), 1);
-//            break;
-//        case 40:
-//            this.commands.directions.splice(this.commands.directions.indexOf(Direction.DOWN), 1);
-//            break;
-//        case 39:
-//            this.commands.directions.splice(this.commands.directions.indexOf(Direction.RIGHT), 1);
-//            break;
-//        case 37:
-//            this.commands.directions.splice(this.commands.directions.indexOf(Direction.LEFT), 1);
-//            break;
-//    }
+    switch(keyCode) {
+        case 38:
+            this.removeDirection(Direction.UP);
+            break;
+        case 40:
+            this.removeDirection(Direction.DOWN);
+            break;
+        case 39:
+            this.removeDirection(Direction.RIGHT);
+            break;
+        case 37:
+            this.removeDirection(Direction.LEFT);
+            break;
+    }
 };
 
 CurrentPlayer.prototype.emitCommands  = function() {
-    if (!this.commands.directions.length) {return;}
 
-    console.log('emit ', this.commands);
+    if (!this.commandsChanged) {return;}
+
     this.socket.emit('commands', this.commands);
 
+    console.log('emit');
+
+    this.commandsChanged = false;
 };

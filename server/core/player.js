@@ -21,7 +21,7 @@ function Player(socket, game) {
     
     var self = this;
     this.socket.on('commands', function(data) {
-        self.onMessage(data); // FIXME TWI : rename onMessage
+        self.onMessage(data);
     });
 }
 
@@ -69,14 +69,11 @@ Player.prototype.update = function() {
         }
     }
 
-    this.directions = [];
-
     if (!this.game.canPlayerMove(this)) {
         this.coords = saveCoords;
     }
 };
 
-/* FIXME TWI : < 2 and not < 4 */
 Player.prototype.isValidMessageData = function(data) {
     return (u.isArray(data.directions) && (data.directions.length < 4));
 };

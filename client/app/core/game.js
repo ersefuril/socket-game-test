@@ -14,7 +14,7 @@ Game.prototype.update = function(messageData) {
     this.players = messageData.players;
 };
 
-/* FIXME TWI : refactor */
+/* FIXME TWI : refactor : class player ? */
 Game.prototype.draw = function(context) {
     
     var img = document.getElementById("jeep");

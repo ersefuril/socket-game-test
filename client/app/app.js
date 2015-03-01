@@ -11,8 +11,11 @@ window.onkeyup = function(event) {
     currentPlayer.onKeyUp(event.keyCode);
 };
 
+
 window.onkeydown = function(event) {
-    currentPlayer.onKeyDown(event.keyCode);
+    if (!event.repeat) {
+        currentPlayer.onKeyDown(event.keyCode);
+    }
 };
 
 setInterval(function() {
