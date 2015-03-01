@@ -14,7 +14,9 @@ var Direction = { /* FIXME TWI : DTO */
 function Player(socket, game) {
     this.game = game;
     this.socket = socket;
-    this.coords = {x: Math.random() * (MapConfig.WIDTH - PlayerConfig.WIDTH), y: Math.random() * (MapConfig.HEIGHT - PlayerConfig.HEIGHT)};
+    this.coords = {x: parseInt(Math.random() * (MapConfig.WIDTH - PlayerConfig.WIDTH)), y: parseInt(Math.random() * (MapConfig.HEIGHT - PlayerConfig.HEIGHT))};
+    this.coords.x = this.coords.x - (this.coords.x % PlayerConfig.SPEED);
+    this.coords.y = this.coords.y - (this.coords.y % PlayerConfig.SPEED);
     this.directions = [];
     // Generate random user nickname
     this.nickname = 'user_' + Math.floor(Math.random() * 1000);
@@ -29,8 +31,9 @@ Player.prototype.equals  = function(player) {
     return (this.socket.id == player.socket.id);
 };
 
+/* FIXME TWI : send nickname only the first time */
 Player.prototype.getUpdateMessage  = function() {
-    return {coords: this.coords, nickname: this.nickname};
+    return {coords: this.coords, nickname: this.nickname, directions: this.directions};
 };
 
 Player.prototype.collideWithMap = function() {
@@ -52,7 +55,7 @@ Player.prototype.update = function() {
         y: this.coords.y
     };
 
-    /* FIXME TWI : calcul speed when daigonal */
+    /* FIXME TWI : calcul speed when diagonal */
     var speed = (this.directions.length == 2) ? PlayerConfig.DIAGONAL_SPEED : PlayerConfig.SPEED;
 
     for(var i = 0; i < this.directions.length; i++) {

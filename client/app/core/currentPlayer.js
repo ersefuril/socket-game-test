@@ -58,11 +58,25 @@ CurrentPlayer.prototype.onKeyUp  = function(keyCode) {
     }
 };
 
+CurrentPlayer.prototype.getCommandsMessage = function() {
+    var msg = _.clone(this.commands);
+    // We remove opposite directions
+    if (msg.directions.indexOf(Direction.UP) > -1 && msg.directions.indexOf(Direction.DOWN) > -1) {
+        msg.directions.splice(msg.directions.indexOf(Direction.UP), 1);
+        msg.directions.splice(msg.directions.indexOf(Direction.DOWN), 1);
+    }
+    if (msg.directions.indexOf(Direction.LEFT) > -1 && msg.directions.indexOf(Direction.RIGHT) > -1) {
+        msg.directions.splice(msg.directions.indexOf(Direction.LEFT), 1);
+        msg.directions.splice(msg.directions.indexOf(Direction.RIGHT), 1);
+    }
+    return msg;
+};
+
 CurrentPlayer.prototype.emitCommands  = function() {
 
     if (!this.commandsChanged) {return;}
 
-    this.socket.emit('commands', this.commands);
+    this.socket.emit('commands', this.getCommandsMessage());
 
     this.commandsChanged = false;
 };
