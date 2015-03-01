@@ -64,7 +64,5 @@ CurrentPlayer.prototype.emitCommands  = function() {
 
     this.socket.emit('commands', this.commands);
 
-    console.log('emit');
-
     this.commandsChanged = false;
 };

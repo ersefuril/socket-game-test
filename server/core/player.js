@@ -52,19 +52,22 @@ Player.prototype.update = function() {
         y: this.coords.y
     };
 
+    /* FIXME TWI : calcul speed when daigonal */
+    var speed = (this.directions.length == 2) ? PlayerConfig.DIAGONAL_SPEED : PlayerConfig.SPEED;
+
     for(var i = 0; i < this.directions.length; i++) {
         switch (this.directions[i]) {
             case Direction.UP:
-                this.coords.y = this.coords.y - 5;
+                this.coords.y = this.coords.y - speed;
                 break;
             case Direction.DOWN:
-                this.coords.y = this.coords.y + 5;
+                this.coords.y = this.coords.y + speed;
                 break;
             case Direction.RIGHT:
-                this.coords.x = this.coords.x + 5;
+                this.coords.x = this.coords.x + speed;
                 break;
             case Direction.LEFT:
-                this.coords.x = this.coords.x - 5;
+                this.coords.x = this.coords.x - speed;
                 break;
         }
     }
