@@ -22,6 +22,11 @@ CurrentPlayer.prototype.removeDirection = function(direction) {
     this.commandsChanged = true;
 };
 
+CurrentPlayer.prototype.throwBullet = function() {
+    this.commands.throwBullet = true;
+    this.commandsChanged = true;
+};
+
 CurrentPlayer.prototype.onKeyDown  = function(keyCode) {
 
     switch(keyCode) {
@@ -43,6 +48,9 @@ CurrentPlayer.prototype.onKeyDown  = function(keyCode) {
 CurrentPlayer.prototype.onKeyUp  = function(keyCode) {
 
     switch(keyCode) {
+        case 32:
+            this.throwBullet();
+            break;
         case 38:
             this.removeDirection(Direction.UP);
             break;
@@ -78,5 +86,6 @@ CurrentPlayer.prototype.emitCommands  = function() {
 
     this.socket.emit('commands', this.getCommandsMessage());
 
+    this.commands.throwBullet = false;
     this.commandsChanged = false;
 };

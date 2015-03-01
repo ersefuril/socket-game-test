@@ -4,7 +4,7 @@ var Direction = { /* TODO : client/server DTO */
     UP: 0,
     DOWN: 1,
     RIGHT: 2,
-    LEFT: 4
+    LEFT: 3
 };
 
 var PlayerDrawer = {
@@ -57,9 +57,14 @@ PlayerDrawer.getImageByDirections = function(directions) {
 PlayerDrawer.draw = function(context, player) {
 
     // Draw player's car
-    context.drawImage(PlayerDrawer.getImageByDirections(player.directions), player.coords.x - 16, player.coords.y - 16, 128, 128);
+    context.drawImage(PlayerDrawer.getImageByDirections(player.directions), player.coords.x, player.coords.y, 128, 128);
     // Draw player's nickname
     context.fillStyle = 'rgb(74, 61, 25)';
     context.font = '8pt Lucida Console';
-    context.fillText(player.nickname, player.coords.x + 50 , player.coords.y + 15);
+    context.fillText(player.nickname, player.coords.x + 50, player.coords.y + 15);
+
+    // Drawing bullets
+    for (var i = 0; i < player.bullets.length; i++) {
+        BulletDrawer.draw(context, player.bullets[i]);
+    }
 };

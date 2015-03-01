@@ -1,7 +1,7 @@
 module.exports = {
 
-    WIDTH: 96,
-    HEIGHT: 96,
+    WIDTH: 32,
+    HEIGHT: 32,
     SPEED: 10, // 10px each 20ms
     DIAGONAL_SPEED:  5 /* FIXME TWI : calcul */
 };
