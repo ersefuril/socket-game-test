@@ -2,7 +2,6 @@ var socket = io('http://localhost:3000');
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 
-/* TODO : Listen window resize */
 canvas.width = 800;
 canvas.height = 600;
 

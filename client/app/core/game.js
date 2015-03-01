@@ -14,13 +14,14 @@ Game.prototype.update = function(messageData) {
     this.players = messageData.players;
 };
 
+/* FIXME TWI : refactor */
 Game.prototype.draw = function(context) {
     
     var img = document.getElementById("jeep");
     
     for (var i = 0; i < this.players.length; i++) {
         // Draw player's car
-        context.drawImage(img,this.players[i].coords.x,this.players[i].coords.y,100,100);
+        context.drawImage(img, this.players[i].coords.x - 16, this.players[i].coords.y - 16, 128, 128);
         // Draw player's nickname
         context.fillStyle = 'rgb(74, 61, 25)';
         context.font = '8pt Lucida Console';

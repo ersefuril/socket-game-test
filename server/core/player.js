@@ -1,33 +1,57 @@
 'use strict';
 
 var u = require('underscore'),
+    PlayerConfig = require('../config/playerConfig'),
     MapConfig = require('../config/mapConfig');
 
-var Direction = { /* TODO : DTO */
+var Direction = { /* FIXME TWI : DTO */
     UP: 0,
     DOWN: 1,
     RIGHT: 2,
     LEFT: 3
 };
 
-function Player(socket) {
+function Player(socket, game) {
+    this.game = game;
     this.socket = socket;
-    this.coords = {x: Math.random() * MapConfig.WIDTH, y: Math.random() * MapConfig.HEIGHT};
+    this.coords = {x: Math.random() * (MapConfig.WIDTH - PlayerConfig.WIDTH), y: Math.random() * (MapConfig.HEIGHT - PlayerConfig.HEIGHT)};
     this.directions = [];
     // Generate random user nickname
     this.nickname = 'user_' + Math.floor(Math.random() * 1000);
     
     var self = this;
     this.socket.on('commands', function(data) {
-        self.onMessage(data); // TODO : rename onMessage
+        self.onMessage(data); // FIXME TWI : rename onMessage
     });
 }
+
+Player.prototype.equals  = function(player) {
+    return (this.socket.id == player.socket.id);
+};
 
 Player.prototype.getUpdateMessage  = function() {
     return {coords: this.coords, nickname: this.nickname};
 };
 
+Player.prototype.collideWithMap = function() {
+    return (this.coords.x < 0 ||
+            this.coords.y < 0 ||
+            this.coords.x + PlayerConfig.WIDTH > MapConfig.WIDTH ||
+            this.coords.y + PlayerConfig.HEIGHT > MapConfig.HEIGHT);
+};
+
+/* FIXME TWI : implement */
+Player.prototype.collideWithPlayer = function(player) {
+    return false;
+};
+
 Player.prototype.update = function() {
+
+    var saveCoords = {
+        x: this.coords.x,
+        y: this.coords.y
+    };
+
     for(var i = 0; i < this.directions.length; i++) {
         switch (this.directions[i]) {
             case Direction.UP:
@@ -44,10 +68,15 @@ Player.prototype.update = function() {
                 break;
         }
     }
+
     this.directions = [];
+
+    if (!this.game.canPlayerMove(this)) {
+        this.coords = saveCoords;
+    }
 };
 
-/* TODO : < 2 and not < 4 */
+/* FIXME TWI : < 2 and not < 4 */
 Player.prototype.isValidMessageData = function(data) {
     return (u.isArray(data.directions) && (data.directions.length < 4));
 };

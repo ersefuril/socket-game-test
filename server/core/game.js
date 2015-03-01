@@ -10,12 +10,27 @@ function Game(socket) {
 
 Game.prototype.addPlayer = function(socket) {
     console.log('Adding socket id : ' + socket.id);
-    this.players.push(new Player(socket));
+    this.players.push(new Player(socket, this));
 };
 
 Game.prototype.removePlayer = function(socket) {
     var playerToRemove = u.findWhere(this.players, {socket: socket});
     this.players.splice(this.players.indexOf(playerToRemove), 1);
+};
+
+Game.prototype.canPlayerMove = function(player) {
+
+    if (player.collideWithMap()) {
+        return false;
+    }
+
+    for(var i = 0; i < this.players.length; i++) {
+        if (!player.equals(this.players[i]) && player.collideWithPlayer(this.players[i])) {
+            return false;
+        }
+    }
+
+    return true;
 };
 
 Game.prototype.update = function() {
