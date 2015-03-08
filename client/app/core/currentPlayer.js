@@ -67,7 +67,7 @@ CurrentPlayer.prototype.onKeyUp  = function(keyCode) {
 };
 
 CurrentPlayer.prototype.getCommandsMessage = function() {
-    var msg = _.clone(this.commands);
+    var msg = JSON.parse(JSON.stringify(this.commands)); // copy
     // We remove opposite directions
     if (msg.directions.indexOf(Direction.UP) > -1 && msg.directions.indexOf(Direction.DOWN) > -1) {
         msg.directions.splice(msg.directions.indexOf(Direction.UP), 1);

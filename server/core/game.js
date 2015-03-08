@@ -34,11 +34,26 @@ Game.prototype.canPlayerMove = function(player) {
 };
 
 Game.prototype.update = function() {
+
     var updateMessage = {players: []};
+
     for (var i = 0; i < this.players.length; i++) {
+
         this.players[i].update();
+
         updateMessage.players.push(this.players[i].getUpdateMessage());
+
+        // check bullet collision
+        for (var j = 0; (j < this.players.length) && (i != j); j++) {
+            for (var k = 0; k < this.players[j].bullets.length; k++) {
+                if (this.players[i].collideWithBullet(this.players[j].bullets[k].coords)) {
+                    this.removePlayer(this.players[i].socket);
+                    break;
+                }
+            }
+        }
     }
+
     this.socket.emit('update', updateMessage);
 };
 

@@ -33,7 +33,7 @@ PlayerDrawer.getImageByDirections = function(directions) {
         if (directions.indexOf(Direction.DOWN) > -1 && directions.indexOf(Direction.LEFT) > -1)
             return PlayerDrawer.images.DOWN_LEFT;
 
-        if (directions.indexOf(Direction.UP) && directions.indexOf(Direction.LEFT) > -1)
+        if (directions.indexOf(Direction.UP) > -1 && directions.indexOf(Direction.LEFT) > -1)
             return PlayerDrawer.images.UP_LEFT;
     }
 
