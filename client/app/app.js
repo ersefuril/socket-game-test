@@ -1,6 +1,6 @@
 /* Fixme TWI : anonymize */
 
-var socket = io('http://localhost:3000');
+var socket = io('http://localhost:3000', {forceNew: true});
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 
@@ -12,7 +12,6 @@ var game = new Game(socket), currentPlayer = new CurrentPlayer(socket);
 window.onkeyup = function(event) {
     currentPlayer.onKeyUp(event.keyCode);
 };
-
 
 window.onkeydown = function(event) {
     if (!event.repeat) {

@@ -17,7 +17,11 @@ var BulletDrawer = {
         DOWN_LEFT: document.getElementById("bullet20"),
         LEFT: document.getElementById("bullet24"),
         UP_LEFT: document.getElementById("bullet28")
-    }
+    },
+    getExplosionImage: function(imgNumber) {
+        return document.getElementById("explosion" + imgNumber);
+    },
+    nbExplosionImages: 15
 };
 
 BulletDrawer.getImageByDirections = function(directions) {
@@ -54,6 +58,9 @@ BulletDrawer.getImageByDirections = function(directions) {
     return BulletDrawer.images.UP;
 };
 
-BulletDrawer.draw = function(context, player) {
-    context.drawImage(BulletDrawer.getImageByDirections(player.directions), player.coords.x - 16, player.coords.y - 16, 32, 32);
+BulletDrawer.draw = function(context, bullet) {
+    context.drawImage(BulletDrawer.getImageByDirections(bullet.directions), bullet.coords.x - 16, bullet.coords.y - 16, 32, 32);
+    if (bullet.explosionState > -1) {
+        context.drawImage(BulletDrawer.getExplosionImage(bullet.explosionState), bullet.coords.x - 16, bullet.coords.y - 16, 32, 32);
+    }
 };

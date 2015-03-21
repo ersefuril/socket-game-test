@@ -62,6 +62,9 @@ PlayerDrawer.draw = function(context, player) {
     context.fillStyle = 'rgb(74, 61, 25)';
     context.font = '8pt Lucida Console';
     context.fillText(player.nickname, player.coords.x + 50, player.coords.y + 15);
+    // Draw health bar
+    context.fillStyle="#FFFFFF";
+    context.fillRect(player.coords.x + 50, player.coords.y, (player.health/100)*30, 5);
 
     // Drawing bullets
     for (var i = 0; i < player.bullets.length; i++) {

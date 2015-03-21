@@ -14,8 +14,10 @@ Game.prototype.addPlayer = function(socket) {
 };
 
 Game.prototype.removePlayer = function(socket) {
-    var playerToRemove = u.findWhere(this.players, {socket: socket});
-    this.players.splice(this.players.indexOf(playerToRemove), 1);
+    var indexPlayerToRemove = this.players.indexOf(u.findWhere(this.players, {socket: socket}));
+    if (indexPlayerToRemove > -1) {
+        this.players.splice(indexPlayerToRemove, 1);
+    }
 };
 
 Game.prototype.canPlayerMove = function(player) {
@@ -41,17 +43,29 @@ Game.prototype.update = function() {
 
         this.players[i].update();
 
-        updateMessage.players.push(this.players[i].getUpdateMessage());
-
-        // check bullet collision
-        for (var j = 0; (j < this.players.length) && (i != j); j++) {
-            for (var k = 0; k < this.players[j].bullets.length; k++) {
-                if (this.players[i].collideWithBullet(this.players[j].bullets[k].coords)) {
-                    this.removePlayer(this.players[i].socket);
-                    break;
+        if (this.players[i].explosionState > 15) {
+            if (this.players[i].health <= 0) {
+                this.removePlayer(this.players[i].socket);
+            } else {
+                this.players[i].isExploding = false;
+                this.players[i].explosionState = -1;
+            }
+        } else {
+            // check bullet collision
+            for (var j = 0; j < this.players.length; j++) {
+                if (i != j) {
+                    for (var k = 0; k < this.players[j].bullets.length; k++) {
+                        if (this.players[i].collideWithBullet(this.players[j].bullets[k].coords)) {
+                            this.players[j].bullets[k].isExploding = true;
+                            this.players[i].isExploding = true;
+                            break;
+                        }
+                    }
                 }
             }
         }
+
+        updateMessage.players.push(this.players[i].getUpdateMessage());
     }
 
     this.socket.emit('update', updateMessage);

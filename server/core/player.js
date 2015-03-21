@@ -23,6 +23,9 @@ function Player(socket, game) {
     this.directions = [];
     this.orientations = [];
     this.bullets = [];
+    this.explosionState = -1;
+    this.isExploding = false;
+    this.health = 100;
     // Generate random user nickname
     this.nickname = 'user_' + Math.floor(Math.random() * 1000);
     
@@ -38,7 +41,7 @@ Player.prototype.equals  = function(player) {
 
 /* FIXME TWI : send nickname only the first time */
 Player.prototype.getUpdateMessage  = function() {
-    return {coords: this.coords, nickname: this.nickname, directions: this.orientations, bullets: this.bullets};
+    return {coords: this.coords, nickname: this.nickname, directions: this.orientations, bullets: this.bullets, health: this.health};
 };
 
 Player.prototype.collideWithMap = function() {
@@ -68,6 +71,20 @@ Player.prototype.collideWithPlayer = function(player) {
 
 Player.prototype.update = function() {
 
+    // Update bullets and remove bullets out of map
+    for (i = 0; i < this.bullets.length; i++) {
+        this.bullets[i].update();
+        if (this.bullets[i].isOutOfMap() || (this.bullets[i].explosionState > 15)) {
+            this.bullets.splice(i, 1);
+        }
+    }
+
+    if (this.isExploding) {
+        this.explosionState++;
+        this.health--;
+        return;
+    }
+
     var saveCoords = {
         x: this.coords.x,
         y: this.coords.y
@@ -95,14 +112,6 @@ Player.prototype.update = function() {
 
     if (!this.game.canPlayerMove(this)) {
         this.coords = saveCoords;
-    }
-
-    // Update bullets and remove bullets out of map
-    for (i = 0; i < this.bullets.length; i++) {
-        this.bullets[i].update();
-        if (this.bullets[i].isOutOfMap()) {
-            this.bullets.splice(this.bullets.indexOf(this.bullets[i]), 1);
-        }
     }
 };
 
