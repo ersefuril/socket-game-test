@@ -16,10 +16,6 @@ var Direction = { /* FIXME TWI : DTO */
 function Player(socket, game) {
     this.game = game;
     this.socket = socket;
-    // Fixme TWI : check if there's not already a player here before setting coords
-    this.coords = {x: parseInt(Math.random() * (MapConfig.WIDTH - PlayerConfig.WIDTH)), y: parseInt(Math.random() * (MapConfig.HEIGHT - PlayerConfig.HEIGHT))};
-    this.coords.x = this.coords.x - (this.coords.x % PlayerConfig.SPEED);
-    this.coords.y = this.coords.y - (this.coords.y % PlayerConfig.SPEED);
     this.directions = [];
     this.orientations = [];
     this.bullets = [];

@@ -1,6 +1,8 @@
 'use strict';
 
 var Player = require('./player'),
+    PlayerConfig = require('../config/playerConfig'),
+    MapConfig = require('../config/mapConfig'),
     u = require('underscore');
 
 function Game(socket) {
@@ -10,7 +12,15 @@ function Game(socket) {
 
 Game.prototype.addPlayer = function(socket) {
     console.log('Adding socket id : ' + socket.id);
-    this.players.push(new Player(socket, this));
+    var isColliding = true, player = new Player(socket, this);
+    while (isColliding) {
+        player.coords = {x: parseInt(Math.random() * (MapConfig.WIDTH - PlayerConfig.WIDTH)), y: parseInt(Math.random() * (MapConfig.HEIGHT - PlayerConfig.HEIGHT))};
+        player.coords.x = player.coords.x - (player.coords.x % PlayerConfig.SPEED);
+        player.coords.y = player.coords.y - (player.coords.y % PlayerConfig.SPEED);
+
+        isColliding = this.isPlayerCollidingWithAnOther(player);
+    }
+    this.players.push(player);
 };
 
 Game.prototype.removePlayer = function(socket) {
@@ -20,19 +30,17 @@ Game.prototype.removePlayer = function(socket) {
     }
 };
 
-Game.prototype.canPlayerMove = function(player) {
-
-    if (player.collideWithMap()) {
-        return false;
-    }
-
+Game.prototype.isPlayerCollidingWithAnOther = function(player) {
     for(var i = 0; i < this.players.length; i++) {
         if (!player.equals(this.players[i]) && player.collideWithPlayer(this.players[i])) {
-            return false;
+            return true;
         }
     }
+    return false;
+};
 
-    return true;
+Game.prototype.canPlayerMove = function(player) {
+    return (!player.collideWithMap() && !this.isPlayerCollidingWithAnOther(player));
 };
 
 Game.prototype.update = function() {
@@ -46,6 +54,7 @@ Game.prototype.update = function() {
         if (this.players[i].explosionState > 15) {
             if (this.players[i].health <= 0) {
                 this.removePlayer(this.players[i].socket);
+                continue;
             } else {
                 this.players[i].isExploding = false;
                 this.players[i].explosionState = -1;
