@@ -40,7 +40,16 @@ Game.prototype.isPlayerCollidingWithAnOther = function(player) {
 };
 
 Game.prototype.canPlayerMove = function(player) {
-    return (!player.collideWithMap() && !this.isPlayerCollidingWithAnOther(player));
+    return !player.collideTopOrLeftWithMap() && !this.isPlayerCollidingWithAnOther(player);
+};
+
+Game.prototype.extendMapIfPlayerColliding = function(player) {
+    if (player.collideBottomWithMap()) {
+        this.mapHeight += PlayerConfig.SPEED * 2;
+    }
+    if (player.collideRightWithMap()) {
+        this.mapWidth += PlayerConfig.SPEED * 2;
+    }
 };
 
 Game.prototype.update = function() {
@@ -50,6 +59,8 @@ Game.prototype.update = function() {
     for (var i = 0; i < this.players.length; i++) {
 
         this.players[i].update();
+
+        this.extendMapIfPlayerColliding(this.players[i]);
 
         if (this.players[i].explosionState > 15) {
             if (this.players[i].health <= 0) {

@@ -58,9 +58,9 @@ BulletDrawer.getImageByDirections = function(directions) {
     return BulletDrawer.images.UP;
 };
 
-BulletDrawer.draw = function(context, bullet) {
-    context.drawImage(BulletDrawer.getImageByDirections(bullet.directions), bullet.coords.x - 16, bullet.coords.y - 16, 32, 32);
+BulletDrawer.draw = function(context, bullet, cameraCoords) {
+    context.drawImage(BulletDrawer.getImageByDirections(bullet.directions), bullet.coords.x - 16 - cameraCoords.x, bullet.coords.y - 16 - cameraCoords.y, 32, 32);
     if (bullet.explosionState > -1) {
-        context.drawImage(BulletDrawer.getExplosionImage(bullet.explosionState), bullet.coords.x - 16, bullet.coords.y - 16, 32, 32);
+        context.drawImage(BulletDrawer.getExplosionImage(bullet.explosionState), bullet.coords.x - 16 - cameraCoords.x, bullet.coords.y - 16 - cameraCoords.y, 32, 32);
     }
 };

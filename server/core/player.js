@@ -2,7 +2,6 @@
 
 var u = require('underscore'),
     PlayerConfig = require('../config/playerConfig'),
-    MapConfig = require('../config/mapConfig'),
     BulletConfig = require('../config/bulletConfig'),
     Bullet = require('./bullet');
 
@@ -37,14 +36,20 @@ Player.prototype.equals  = function(player) {
 
 /* FIXME TWI : send nickname only the first time */
 Player.prototype.getUpdateMessage  = function() {
-    return {coords: this.coords, nickname: this.nickname, directions: this.orientations, bullets: this.bullets, health: this.health};
+    var bulletsUpdateMessage = this.bullets.map(function(b) {return b.getUpdateMessage()});
+    return {coords: this.coords, nickname: this.nickname, socketId: this.socket.id, directions: this.orientations, bullets: bulletsUpdateMessage, health: this.health};
 };
 
-Player.prototype.collideWithMap = function() {
-    return (this.coords.x < 0 ||
-            this.coords.y < 0 ||
-            this.coords.x + PlayerConfig.WIDTH > MapConfig.WIDTH ||
-            this.coords.y + PlayerConfig.HEIGHT > MapConfig.HEIGHT);
+Player.prototype.collideBottomWithMap = function() {
+    return (this.coords.y + PlayerConfig.HEIGHT > this.game.mapHeight);
+};
+
+Player.prototype.collideRightWithMap = function() {
+    return (this.coords.x + PlayerConfig.WIDTH > this.game.mapWidth);
+};
+
+Player.prototype.collideTopOrLeftWithMap = function() {
+    return (this.coords.y < 0 || this.coords.x < 0);
 };
 
 Player.prototype.collideWithBullet = function(bulletCoords) {
@@ -126,7 +131,7 @@ Player.prototype.onMessage = function(data) {
     }
 
     if (data.throwBullet) {
-        this.bullets.push(new Bullet(u.clone(this.coords), this.orientations))
+        this.bullets.push(new Bullet(u.clone(this.coords), this.orientations, this.game))
     }
 };
 

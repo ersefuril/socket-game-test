@@ -2,8 +2,7 @@
 
 var u = require('underscore'),
     BulletConfig = require('../config/bulletConfig'),
-    PlayerConfig = require('../config/playerConfig'),
-    MapConfig = require('../config/mapConfig');
+    PlayerConfig = require('../config/playerConfig');
 
 var Direction = { /* FIXME TWI : DTO */
     UP: 0,
@@ -12,7 +11,8 @@ var Direction = { /* FIXME TWI : DTO */
     LEFT: 3
 };
 
-function Bullet(playerCoords, directions) {
+function Bullet(playerCoords, directions, game) {
+    this.game = game;
     this.coords = {
         x: playerCoords.x + PlayerConfig.WIDTH/2,
         y: playerCoords.y + PlayerConfig.HEIGHT/2
@@ -25,8 +25,8 @@ function Bullet(playerCoords, directions) {
 Bullet.prototype.isOutOfMap = function() {
     return (this.coords.x + BulletConfig.WIDTH < 0 ||
     this.coords.y + BulletConfig.HEIGHT < 0 ||
-    this.coords.x > MapConfig.WIDTH ||
-    this.coords.y > MapConfig.HEIGHT);
+    this.coords.x > this.game.mapWidth ||
+    this.coords.y > this.game.mapHeight);
 };
 
 Bullet.prototype.getUpdateMessage = function() {

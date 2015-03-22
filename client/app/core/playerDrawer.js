@@ -54,20 +54,20 @@ PlayerDrawer.getImageByDirections = function(directions) {
     return PlayerDrawer.images.UP;
 };
 
-PlayerDrawer.draw = function(context, player) {
+PlayerDrawer.draw = function(context, player, cameraCoords) {
 
     // Draw player's car
-    context.drawImage(PlayerDrawer.getImageByDirections(player.directions), player.coords.x, player.coords.y, 128, 128);
+    context.drawImage(PlayerDrawer.getImageByDirections(player.directions), player.coords.x - cameraCoords.x, player.coords.y - cameraCoords.y, 128, 128);
     // Draw player's nickname
     context.fillStyle = 'rgb(74, 61, 25)';
     context.font = '8pt Lucida Console';
-    context.fillText(player.nickname, player.coords.x + 50, player.coords.y + 15);
+    context.fillText(player.nickname, player.coords.x + 50 - cameraCoords.x, player.coords.y + 15 - cameraCoords.y);
     // Draw health bar
     context.fillStyle="#FFFFFF";
-    context.fillRect(player.coords.x + 50, player.coords.y, (player.health/100)*30, 5);
+    context.fillRect(player.coords.x + 50 - cameraCoords.x, player.coords.y - cameraCoords.y, (player.health/100)*30, 5);
 
     // Drawing bullets
     for (var i = 0; i < player.bullets.length; i++) {
-        BulletDrawer.draw(context, player.bullets[i]);
+        BulletDrawer.draw(context, player.bullets[i], cameraCoords);
     }
 };
